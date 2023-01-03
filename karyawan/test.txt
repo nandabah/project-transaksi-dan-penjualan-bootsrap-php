@@ -1,0 +1,332 @@
+<?php
+session_start();
+//var_dump($_SESSION);
+require'../koneksi/conn.php';
+$result = mysqli_query($koneksi,"SELECT * FROM `menu` WHERE `id_ketegori` = '2'");
+$result2 = mysqli_query($koneksi,"SELECT * FROM `menu` WHERE `id_ketegori` = '1'");
+
+
+
+
+if ($_SESSION['total'] === [] || !isset($_SESSION['total'])) {
+   $total = 0;
+}else{
+    $total = $_SESSION['total'];
+}
+ 
+if(!isset ($_SESSION['a'])){
+    $a = 0;
+    $b = 0;
+
+    
+}else{
+    $a = $_SESSION['a'];
+   
+}
+
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link rel="stylesheet" href="cssadmin.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+
+<body>
+    <div>
+        <nav class="navbar bg-light fixed-top">
+            <div class="container-fluid">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <?php 
+                // // echo $tanngal;
+                // // echo $jam;
+                // // echo $detik;
+                //  //echo $b;
+                //  var_dump($_SESSION['jumlah']);
+                //  var_dump($_SESSION['menu']);
+                // var_dump($_SESSION['harga']);
+
+              //  echo $kombinasi;
+                // if(!$result){echo mysqli_error($result);}
+                ?>
+                <a class="navbar-brand" href="#"><?= $_SESSION['id_karyawan'] ?></a>
+                <div class="offcanvas offcanvas-start" tabindex="" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Sederek Kopi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="index.php">Transaksi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="pesanan.php">Pesanan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Menu</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">karyawan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Laporan Penjualan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Laporan Stok</a>
+                            </li>
+                            <li>
+                                <form action="logout.php">
+                                    <button class="btn btn-outline-success " type="submit">Keluar</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="row mt-5 px-3" style="margin:0">
+            <div class="col-9 mt-2 mx-auto " style="width:65%">
+       
+            <input type="text" id="myInput" onkeyup='tableSearch()' placeholder="Name">
+
+                <!-- form -->
+                <form action="setSession.php" method="post">
+                             <!-- menu kopi -->
+                             <table style="width: 20%;"class="table" id="myTable" data-filter-control="true" data-show-search-clear-button="true">
+                             <div class="row">
+                        <div class="row ">
+                            Kopi
+                        </div>
+                        <?php while($row = mysqli_fetch_array($result)){ ?>
+                            <tr style="overflow: auto">
+
+                        <script>
+                        function a<?= $row["id_menu"] ;?>() {
+                            var checkBox = document.getElementById("<?= $row['id_menu'] ;?>");
+
+
+                            if (checkBox.checked == true) {
+                                document.getElementById("nama<?= $row["id_menu"] ;?>").value =
+                                    "<?= $row["nama_menu"] ;?>";
+                                document.getElementById("harga<?= $row["id_menu"] ;?>").value = "<?= $row["harga"] ;?>";
+                                document.getElementById("id_menu<?= $row["id_menu"] ;?>").value = "<?= $row["id_menu"] ;?>";
+
+                     
+                                document.getElementById("jumlah<?= $row["id_menu"] ;?>").focus();
+
+
+                            } else {
+                                document.getElementById("nama<?= $row["id_menu"] ;?>").value = "";
+                                document.getElementById("harga<?= $row["id_menu"] ;?>").value = "";
+                                document.getElementById("jumlah<?= $row["id_menu"] ;?>").value = "";
+
+                            }
+                        }
+                        </script>
+                        
+                        
+                                <td>
+                                <label class="mx-3 my-2" for="<?= $row["id_menu"] ;?>" style="width: 18rem;">
+                            <div class="card" style="width: 18rem;">
+                                <img src="..." class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <?= $row["nama_menu"];?></h5>
+                                    <h3 class="card-title" name="harga" value=" <?= $row["harga"];?>">Rp.
+                                        <?= $row["harga"];?></h3>
+
+                                    <input class="form-control form-control-lg" type="number" id="jumlah<?= $row['id_menu'] ;?>" name="jmlh[]"
+                                        placeholder="0" aria-label=".form-control-lg example">
+                                    <input type="checkbox" onclick="a<?= $row['id_menu'] ;?>()"
+                                        class=" form-check-input mt-0" id="<?= $row['id_menu'] ;?>">
+                                    <input type="text" id="nama<?= $row["id_menu"] ;?>" name="menu[]" hidden value="">
+                                    <input type="text" id="id_menu<?= $row["id_menu"] ;?>" name="id_menu[]" hidden  value="">
+                                    <input type="text" id="harga<?= $row["id_menu"] ;?>" name="harga[]" hidden  value="" >
+                                </div>
+                            </div>
+                        </label>
+                                </td>
+                            </tr> 
+           
+                        <?php } ?>
+                      
+                     
+                       
+                    </div>
+                    </table>
+
+                                    <!-- end menu kopi -->
+                                    <!-- start menu makanan -->
+                                    <div class="row">
+                        <div class="row ">
+                            Makanan
+                        </div>
+                        <?php while($row = mysqli_fetch_array($result2)){ ?>
+
+                        <script>
+                        function a<?= $row["id_menu"] ;?>() {
+                            var checkBox = document.getElementById("<?= $row['id_menu'] ;?>");
+
+
+                            if (checkBox.checked == true) {
+                                document.getElementById("nama<?= $row["id_menu"] ;?>").value =
+                                    "<?= $row["nama_menu"] ;?>";
+                                document.getElementById("harga<?= $row["id_menu"] ;?>").value = "<?= $row["harga"] ;?>";
+                                document.getElementById("id_menu<?= $row["id_menu"] ;?>").value = "<?= $row["id_menu"] ;?>";
+
+                     
+                                document.getElementById("jumlah<?= $row["id_menu"] ;?>").focus();
+
+
+                            } else {
+                                document.getElementById("nama<?= $row["id_menu"] ;?>").value = "";
+                                document.getElementById("harga<?= $row["id_menu"] ;?>").value = "";
+                                document.getElementById("jumlah<?= $row["id_menu"] ;?>").value = "";
+
+                            }
+                        }
+                        </script>
+                        <label class="mx-3 my-2" for="<?= $row["id_menu"] ;?>" style="width: 18rem;">
+                            <div class="card" style="width: 18rem;">
+                                <img src="..." class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <?= $row["nama_menu"];?></h5>
+                                    <h3 class="card-title" name="harga" value=" <?= $row["harga"];?>">Rp.
+                                        <?= $row["harga"];?></h3>
+
+                                    <input class="form-control form-control-lg" type="number" id="jumlah<?= $row['id_menu'] ;?>" name="jmlh[]"
+                                        placeholder="0" aria-label=".form-control-lg example">
+                                    <input type="checkbox" onclick="a<?= $row['id_menu'] ;?>()"
+                                        class=" form-check-input mt-0" id="<?= $row['id_menu'] ;?>">
+                                    <input type="text" id="nama<?= $row["id_menu"] ;?>" name="menu[]" hidden value="">
+                                    <input type="text" id="id_menu<?= $row["id_menu"] ;?>" name="id_menu[]" hidden  value="">
+                                    <input type="text" id="harga<?= $row["id_menu"] ;?>" name="harga[]" hidden  value="" >
+                                </div>
+                            </div>
+                        </label>
+                        <?php } ?>
+                      
+                
+                        <input type="submit" name="submit" class="position-stiky btn btn-primary " style="position: sticky;
+  bottom: 1%;">
+                    </div>
+                    <!-- end menu makanan -->
+                </form>
+
+            </div>
+
+            <dic class="col-3 mt-2">
+                <div class="row" style="position: sticky;
+  top: 60px;">
+
+                    <div class="col overflow-auto" style="  height:300px;">
+
+                        <form action="prosestambah.php" method="post" >
+                            
+
+                            <table class="table  table-hover">
+                                <thead style=" position: sticky;top:0" class="table-light">
+                                    <tr class="">
+
+                                        <th scope="col" class="w-50">Nama Menu
+
+                                        </th>
+                                        <th scope="col" class="w-50">Harga
+
+                                        </th>
+                                        </th>
+
+
+                                        <th scope="col" class="jumlah "><span class="mx-auto ">Jumlah</span>
+                                            <a href="" class></a>
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+                                <tbody class="table inputproses" >
+                                    <?php 
+                          for ($i=0; $i < $a ; $i++) {  ?>
+                                    <tr>
+
+                                        <td>
+                                        <input id="pText" class="form-control form-control-sm mx-auto" hidden name="id_menu[]"  type="text" value="<?php echo $_SESSION['id_menu'][$i] ;?>"  >
+                                        <input id="pText" class="form-control form-control-sm mx-auto"    type="text" value="<?php echo $_SESSION['menu'][$i] ;?>"  >
+                                      
+                                        </td>
+                                        <td>
+                                        <input id="pText" class="form-control form-control-sm mx-auto" name="harga[]"type="text" value="<?php echo $_SESSION['harga'][$i] ;?>" >        
+                                               
+                                        </td>
+                                        <td>
+                                            <input type="number" name="jumlah[]"  class=" jumlah form-control form-control-sm mx-auto"
+                                                value="<?=$_SESSION['jumlah'][$i]?>" ></td>
+                                    </tr>
+
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+
+                    </div>
+
+
+                    <p>Total Bayar  Rp.<input type="text" name="total_bayar" style="  pointer-events: none;" value="<?= $total ?>" ></p>
+
+                    <input type="submit" name="proses" class="position-stiky btn btn-primary w-100 submit">
+
+                    </form>
+                </div>
+
+            </dic>
+        </div>
+
+        <footer class="footer">
+            asd
+        </footer>
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous">
+        </script>
+</body>
+<script type="application/javascript">
+        function tableSearch() {
+            let input, filter, table, tr, td, txtValue;
+
+            //Intialising Variables
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (let i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+        }
+    </script>
+</html>
